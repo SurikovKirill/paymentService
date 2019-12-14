@@ -26,7 +26,7 @@ public class PaymentController {
 
     private final RabbitTemplate rabbitTemplate;
     private static final String ORDER_EXCHANGE = "paymentOrderStatus";
-    private static final String ORDER_KEY = "payData";
+    private static final String ORDER_KEY = "payStatus";
     public PaymentController(RabbitTemplate rabbitTemplate){
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -42,7 +42,14 @@ public class PaymentController {
             LOGGER.info("Called perfomedPayment method with parameter order_id = {}, and inputs: CAI = {}, username = {}", orderId, user.getStatus(), user.getUsername());
             Payment payment = new Payment(user.getStatus(), orderId, user.getUsername());
             paymentRepo.save(payment);
-            rabbitTemplate.convertAndSend(ORDER_EXCHANGE, ORDER_KEY, orderId.toString()+user.getStatus());
+            String statTmp;
+            if (user.getStatus().toString().equals("AUTHORIZED")){
+                statTmp="PAYED";
+            }
+            else {
+                statTmp = "FAILED";
+            }
+            rabbitTemplate.convertAndSend(ORDER_EXCHANGE, ORDER_KEY, "{orderID: "+orderId.toString()+", status: "+statTmp+"}");
             return payment;
         }
         catch (InvalidFormatException e){
