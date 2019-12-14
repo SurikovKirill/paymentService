@@ -18,6 +18,7 @@ public class Payment {
     @Column(name = "username")
     private String username;
 
+
     public Payment() {
     }
 
