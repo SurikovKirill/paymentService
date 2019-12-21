@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int paymentId;
+    private Integer paymentId;
     @Column(name = "cardStatus")
     private CardAuthorizationInfo cardStatus;
     @Column(name = "orderId")
@@ -28,7 +28,7 @@ public class Payment {
         this.username = username;
     }
 
-    public int getPaymentId() {
+    public Integer getPaymentId() {
         return paymentId;
     }
 

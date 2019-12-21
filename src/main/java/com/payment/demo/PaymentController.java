@@ -9,6 +9,7 @@ import com.payment.demo.entity.Payment;
 import com.payment.demo.exceptions.BadFormatCardStatusException;
 import com.payment.demo.repos.PaymentRepository;
 import net.minidev.json.JSONObject;
+import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -61,4 +62,14 @@ public class PaymentController {
         // тип данных orderDto
         // return orderDto
     }
+    @GetMapping("{orderId}")
+    public @ResponseBody Payment getPaymentByOrder(@PathVariable(value = "orderId") Integer orderId){
+        Payment payment = new Payment();
+        payment.setOrderId(orderId);
+        org.springframework.data.domain.Example<Payment> example = org.springframework.data.domain.Example.of(payment);
+        return paymentRepo.findOne(example).orElseThrow(NullPointerException::new);
+    }
+
 }
+
+
